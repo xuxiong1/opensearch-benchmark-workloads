@@ -254,4 +254,28 @@
           "clients": {{ significant_text_sampled_unselective_search_clients or search_clients | default(1) | tojson }}
         }
       ]
+    },
+    {
+      "name": "ingestion-index-only",
+      "description": "Indexes the whole document corpus using OpenSearch default settings. We only adjust the number of replicas as we benchmark a single node cluster and Benchmark will only start the benchmark if the cluster turns green. Document ids are unique so all index operations are append only.",
+      "schedule": [
+        {
+          "operation": "delete-index"
+        },
+        {
+          "operation": {
+              "operation-type": "create-index",
+              "settings": {{index_settings | default(default_index_settings | default({})) | tojson}}
+          }
+        },
+        {
+          "operation": {
+              "name": "polling-ingest",
+              "operation-type": "produce-stream-message",
+              "bulk-size": {{bulk_size | default(100)}},
+              "ingest-percentage": {{ingest_percentage | default(100)}},
+              "topic": "test"
+          }
+        }
+      ]
     }

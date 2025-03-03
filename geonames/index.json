@@ -1,10 +1,18 @@
 {
   "settings": {
-    "index.number_of_shards": {{number_of_shards | default(5)}},
+    "index.number_of_shards": {{number_of_shards | default(1)}},
     "index.number_of_replicas": {{number_of_replicas | default(0)}},
     "index.store.type": "{{store_type | default('fs')}}",
     "index.queries.cache.enabled": {{query_cache_enabled | default(false) | tojson}},
-    "index.requests.cache.enable": {{requests_cache_enabled | default(false) | tojson}}
+    "index.requests.cache.enable": {{requests_cache_enabled | default(false) | tojson}},
+    "ingestion_source": {
+      "type":"kafka",
+      "pointer.init.reset":"latest",
+      "param":{
+         "topic":"test",
+         "bootstrap_servers":"localhost:34803"
+      }
+   }
   },
   "mappings": {
     "dynamic": "strict",
