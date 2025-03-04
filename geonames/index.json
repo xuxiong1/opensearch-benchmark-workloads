@@ -6,11 +6,11 @@
     "index.queries.cache.enabled": {{query_cache_enabled | default(false) | tojson}},
     "index.requests.cache.enable": {{requests_cache_enabled | default(false) | tojson}},
     "ingestion_source": {
-      "type":"kafka",
+      "type": {{ingestion_source_type | default("kafka") | tojson}},
       "pointer.init.reset":"latest",
-      "param":{
-         "topic":"test",
-         "bootstrap_servers":"localhost:34803"
+      "param": {
+         "topic": {{ingestion_topic | default("") | tojson}},
+         "bootstrap_servers": {{ingestion_bootstrap_servers | default("") | tojson}}
       }
    }
   },

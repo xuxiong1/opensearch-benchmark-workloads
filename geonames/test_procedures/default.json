@@ -274,7 +274,13 @@
               "operation-type": "produce-stream-message",
               "bulk-size": {{bulk_size | default(100)}},
               "ingest-percentage": {{ingest_percentage | default(100)}},
-              "topic": "test"
+              "ingestion_source": {
+                "type": {{ingestion_source_type | default("kafka") | tojson}},
+                "param": {
+                   "topic": {{ingestion_topic | default("") | tojson}},
+                   "bootstrap_servers": {{ingestion_bootstrap_servers | default("") | tojson}}
+                }
+             }
           }
         }
       ]
