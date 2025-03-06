@@ -292,6 +292,6 @@
           "name": "refresh-after-index",
           "operation": "refresh"
         },
-        {{ benchmark.collect(parts="../../common_operations/force_merge.json") }},
+        {{ benchmark.collect(parts="../../common_operations/force_merge.json") }}
       ]
     }
