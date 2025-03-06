@@ -278,6 +278,7 @@
               "name": "polling-ingest",
               "operation-type": "produce-stream-message",
               "bulk-size": {{bulk_size | default(100)}},
+              "clients": {{bulk_indexing_clients | default(8)}},
               "ingest-percentage": {{ingest_percentage | default(100)}},
               "ingestion-source": {
                 "type": {{ingestion_source_type | default("kafka") | tojson}},
