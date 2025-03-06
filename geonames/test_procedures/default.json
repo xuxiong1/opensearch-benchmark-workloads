@@ -256,18 +256,23 @@
       ]
     },
     {
-      "name": "ingestion-index-only",
-      "description": "Indexes the whole document corpus using OpenSearch default settings. We only adjust the number of replicas as we benchmark a single node cluster and Benchmark will only start the benchmark if the cluster turns green. Document ids are unique so all index operations are append only.",
+      "name": "polling-ingest-index-only",
+      "description": "Ingest the documents from Streaming Service into OpenSearch using polling ingestion. The index is created with the default settings.",
       "schedule": [
-        {
-          "operation": "delete-index"
-        },
-        {
-          "operation": {
-              "operation-type": "create-index",
-              "settings": {{index_settings | default(default_index_settings | default({})) | tojson}}
+        {{ benchmark.collect(parts="../../common_operations/delete_index.json") }},
+        {% with default_index_settings={
+          "ingestion_source": {
+            "type": ingestion_source_type | default("kafka"),
+            "pointer.init.reset": "latest",
+            "param": {
+              "topic": ingestion_topic | default(""),
+              "bootstrap_servers": ingestion_bootstrap_servers | default("")
+            }
           }
-        },
+        } %}
+        {{ benchmark.collect(parts="../../common_operations/create_index.json") }},
+        {% endwith %}
+        {{ benchmark.collect(parts="../../common_operations/check_cluster_health.json") }},
         {
           "operation": {
               "name": "polling-ingest",
@@ -282,6 +287,11 @@
                 }
              }
           }
-        }
+        },
+        {
+          "name": "refresh-after-index",
+          "operation": "refresh"
+        },
+        {{ benchmark.collect(parts="../../common_operations/force_merge.json") }},
       ]
     }
